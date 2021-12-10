@@ -1,18 +1,11 @@
-# ************************READ ME************************
-#                 Version 1.1 11/04/2021
-# This only runs in VSCode currently, not in exe format
-# Only I can run this as of now, so this is not sharable
-# These issues will be corrected in future updates. 
-
 import os
 from dir_names import *
-import datetime
 
 main_dir = [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov ,dec]			# Loading the list of sub-directories
 year = input("Year: ")
-root_dir = 'W:/Risk Control/public/TEA/' + str(year)
 main_dir_names = ['01', '02', '03','04', '05', '06', '07', '08', '09', '10', '11', '12'] # Name of the sub-directories
 
+# check if leap year, returns 1 if true, 0 if false
 def leapyear(year):
     if int(year) % 4 == 0:
         if int(year) % 100 == 0:
@@ -24,10 +17,11 @@ def leapyear(year):
             return 1
     else:
         return 0
-                
-def TEAdirectory():
+
+# create daily folders for /TEA            
+def tea_folders():
+    root_dir = 'W:/Risk Control/public/TEA/' + str(year)
     # Create directory
-    
     for i in range(0, len(main_dir)):
         for j in range(0,len(main_dir[i])):
             daypathval = main_dir[i][j]
@@ -51,43 +45,46 @@ def TEAdirectory():
                 print("Directory " , dirName ,  " already exists")
 
     leapyearbo = leapyear(year)
+    print (leapyearbo)
     if leapyearbo == 1:
-                print ('Leap Year: TRUE')
-                dirName = 'W:/Risk Control/public/TEA/' + str(year) + '/02/0229' + str(year)
-                if not os.path.exists(dirName):
-                    os.makedirs(dirName)
-                    print("Directory " , dirName ,  " Created ")
-                else:    
-                    print("Directory " , dirName ,  " already exists")
-    else:
-        print('Leap Year: FALSE')
-    print('Process Complete.\n\nThere is a "45th" day added into every month\nYou must delete this manually\nThis will be fixed in version 1.2')
+         leapyrpath = 'W:/Risk Control/public/TEA/' + str(year) + '/02/0229' + str(year)
+         if not os.path.exists(leapyrpath)
+            os.makedirs(leapyrpath)
+            print ('Directory ' + leapyrpath + ' Created')
+    # Remove excess '45' date folders
+    for i in range (0, len(main_dir_names)):
+        os.rmdir(str(root_dir) + '/' + str(main_dir_names[i]) + '/' + str(main_dir_names[i]) + '45' + str(year))
+
+folder_tree_results = []
+
+# search public folder for individual folders that need yearly folders
+def folder_tree_search():
+    for roots, dirs, files in os.walk("W:\Risk Control\public"):
+        for dir in dirs:
+            # if there is pre-existing year folders, add path to list
+            if dir == '2021':
+                folder_tree_results.append(roots)
+
+def misc_folders():
+
+    folder_tree_search()
+    # for every necessary folder
+    for element in folder_tree_results:
+        # for every month
+        for month in main_dir_names:
+            # create folder in dir for each month
+            dir_name = element + '\\' + year + '\\' + month
+            os.makedirs(dir_name)
+            # confirmation
+            print ('Directory ' + dir_name + ' has been created')
         
-    # Code to remove extra '45' files created, 
-    # for i in range (0, len(main_dir_names)):
-    #    os.remove(str(root_dir) + '/' + str(main_dir_names[i]) + '/' + str(main_dir_names[i]) + '45' + str(year))
-
-def FileParse():
-    directory = 'W:/Risk Control/public'
-    templist = [10000]
-    for filename in os.listdir(directory):
-        num = 0
-        if filename.endswith('.xlsx'):
-            templist [num] = filename
-            num =+ 1
-    print (templist)
-
-
 def main():
-    search = input('Select what to create:\n1)  TEA Daily Folders\n2)   Public Monthly\n')
-    if search == "1":
-        TEAdirectory()
-    elif search == "2":
-        FileParse()
-    else:
-        print('Invalid Selection')
+    tea_folders()
+    misc_folders()
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
+
 
 
