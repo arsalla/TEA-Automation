@@ -31,15 +31,19 @@ else:
 if len(str(daystr)) == 1:
     daystr = '0' + str(daystr)
 
+if len(str(month)) == 1:
+    monthstr = '0' + str(month)
+
 # Update URL
-url = "https://www.theice.com/publicdocs/irm_files/iceu/{}/{}/IPE{}{}F.CSV.zip".format(todays_date.year, month, month, daystr)
+url = "https://www.theice.com/publicdocs/irm_files/iceu/{}/{}/IPE{}{}F.CSV.zip".format(todays_date.year, monthstr, monthstr, daystr)
+print (url)
 
 daypathval = todays_date.day
 if len(str(daypathval)) == 1:
     daypathval = '0' + str(daypathval)
 
 # Set path
-path = "W:\Risk Control\public\TEA\{}\{}\{}{}{}".format(todays_date.year, todays_date.month, todays_date.month, daypathval, todays_date.year)
+path = "W:\Risk Control\public\TEA\{}\{}\{}{}{}".format(todays_date.year, monthstr, monthstr, daypathval, todays_date.year)
 r = requests.get(url, allow_redirects=True)
 
 # Download .zip to dated folder
